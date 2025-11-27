@@ -172,6 +172,7 @@
 
         /* Help Button */
         .help-btn {
+            position: fixed !important;
             position: absolute;
             bottom: 20px;
             right: 20px;
@@ -192,6 +193,7 @@
 
         /* Modals (Help) */
         .modal {
+            position: fixed !important;
             position: fixed;
             top: 0;
             left: 0;
@@ -608,7 +610,15 @@
                 ✓ Confirmar Hallazgo
             </button>
         
-        <!-- Help Button -->
+        
+
+    </div>
+    </div>
+
+    
+    <!-- AR Help Container -->
+    <div id="ar-help-container" style="display: none;">
+<!-- Help Button -->
         <div class="help-btn" onclick="showHelpModal()">?</div>
 
         <!-- Help Modal -->
@@ -621,8 +631,6 @@
                 <button class="btn btn-gold" onclick="closeHelpModal()" style="width: auto; padding: 12px 30px;">¡Ya entendí!</button>
             </div>
         </div>
-
-    </div>
     </div>
 
     <!-- SCREEN 1: HOME -->
@@ -865,6 +873,7 @@
         }
 
         function startAR() {
+            document.getElementById("ar-help-container").style.display = "block";
             // Hide all screens
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
 
@@ -881,6 +890,7 @@
         }
 
         function exitAR() {
+            document.getElementById("ar-help-container").style.display = "none";
             // Stop MindAR
             const sceneEl = document.querySelector('a-scene');
             const arSystem = sceneEl.systems['mindar-image-system'];
