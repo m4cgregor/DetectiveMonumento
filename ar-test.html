@@ -170,6 +170,56 @@
             font-weight: bold;
         }
 
+        /* Help Button */
+        .help-btn {
+            position: absolute;
+            bottom: 30px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            border: 2px solid white;
+            cursor: pointer;
+            pointer-events: all;
+            z-index: 20;
+        }
+
+        /* Modals (Help) */
+        .modal {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            box-sizing: border-box;
+            z-index: 30;
+            pointer-events: all;
+        }
+
+        .modal-content {
+            background: #fff;
+            color: #333;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+            text-shadow: none;
+        }
+
+
 
         /* Regular UI Screens */
         .screen {
@@ -556,7 +606,22 @@
             <button id="ar-confirm-btn" class="ar-btn ar-btn-primary" onclick="confirmFound()" style="display: none;">
                 ✓ Confirmar Hallazgo
             </button>
+        
+        <!-- Help Button -->
+        <div class="help-btn" onclick="showHelpModal()">?</div>
+
+        <!-- Help Modal -->
+        <div id="modal-help" class="modal">
+            <div class="modal-content">
+                <div style="position:absolute; top:10px; right:15px; cursor:pointer; font-size:24px;"
+                    onclick="closeHelpModal()">✕</div>
+                <h3>💡 Pista</h3>
+                <p id="help-hint-text" style="font-style: italic; color: #555; margin: 15px 0;"></p>
+                <button class="btn btn-gold" onclick="closeHelpModal()" style="width: auto; padding: 12px 30px;">¡Ya entendí!</button>
+            </div>
         </div>
+
+    </div>
     </div>
 
     <!-- SCREEN 1: HOME -->
@@ -893,6 +958,20 @@
             for (let i = 0; i < count; i++) s += "⭐";
             return s || "-";
         }
+
+        // Help Modal Functions
+        function showHelpModal() {
+            const data = missionDetails[currentMission];
+            if (data && data.hint) {
+                document.getElementById('help-hint-text').innerText = data.hint;
+                document.getElementById('modal-help').style.display = 'flex';
+            }
+        }
+
+        function closeHelpModal() {
+            document.getElementById('modal-help').style.display = 'none';
+        }
+
     </script>
 </body>
 
