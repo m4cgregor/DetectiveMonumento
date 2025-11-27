@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mockup WebAR - Monumento con IA y Puntos</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Simulación del Celular */
+        .phone-frame {
+            width: 360px;
+            height: 740px;
+            background-color: #000;
+            border-radius: 30px;
+            border: 10px solid #333;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Pantallas */
+        .screen {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: none;
+            flex-direction: column;
+        }
+
+        .active {
+            display: flex;
+        }
+
+        /* --- CORRECCIÓN DE FONDOS --- */
+
+        /* Fondo Cámara (Textura de Piedra) */
+        .bg-camera {
+            background-color: #555;
+            /* Color base por si falla la imagen */
+            background-image: url('https://images.unsplash.com/photo-1596495578065-6e0763fa1178?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80');
+            background-size: cover;
+            background-position: center;
+            filter: grayscale(80%);
+        }
+
+        /* Fondo Monumento (General) */
+        .bg-monument {
+            background-color: #1a1a1a;
+            /* Color base */
+            /* Gradiente oscuro sobre la imagen para que se lea el texto */
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Monumento_Nacional_a_la_Bandera_Rosario.jpg/800px-Monumento_Nacional_a_la_Bandera_Rosario.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Fondo Final (Animado) */
+        .bg-final {
+            background-color: #0d1b2a;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Monumento_Nacional_a_la_Bandera_Rosario.jpg/800px-Monumento_Nacional_a_la_Bandera_Rosario.jpg');
+            background-size: cover;
+            background-position: center;
+            animation: panBackground 20s infinite linear;
+        }
+
+        /* Fondo Intro (Más oscuro) */
+        .bg-intro {
+            background-color: #000;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.7)), url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Monumento_Nacional_a_la_Bandera_Rosario.jpg/800px-Monumento_Nacional_a_la_Bandera_Rosario.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+
+        @keyframes panBackground {
+            0% {
+                background-position: center;
+            }
+
+            50% {
+                background-position: top;
+            }
+
+            100% {
+                background-position: center;
+            }
+        }
+
+        /* Elementos UI Generales */
+        .overlay {
+            /* Eliminamos el background semitransparente fijo ya que usamos gradientes en las imagenes */
+            /* background: rgba(0, 0, 0, 0.4); */
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+            box-sizing: border-box;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+            /* Sombra para mejor lectura */
+        }
+
+        h1,
+        h2 {
+            margin: 0;
+            text-align: center;
+        }
+
+        p {
+            text-align: center;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .btn {
+            background: #75AADB;
+            /* Celeste Bandera */
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            margin: 10px auto;
+            display: block;
+            width: 80%;
+            transition: transform 0.2s;
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid white;
+            backdrop-filter: blur(5px);
+        }
+
+        .btn-gold {
+            background: #D4AF37;
+            color: #333;
+        }
+
+        .btn-final {
+            background: linear-gradient(45deg, #D4AF37, #FFF, #D4AF37);
+            color: #000;
+            animation: pulse 2s infinite;
+            border: 2px solid #fff;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 10px #D4AF37;
+            }
+
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 20px #FFF;
+            }
+
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 10px #D4AF37;
+            }
+        }
+
+        /* Pantalla 1: Home */
+        .logo-area {
+            margin-top: 100px;
+            text-align: center;
+        }
+
+        .logo-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        /* Pantalla Intro */
+        .intro-text {
+            font-size: 18px;
+            line-height: 1.6;
+            text-align: center;
+            margin-top: 40px;
+            color: #eee;
+        }
+
+        .intro-icon {
+            font-size: 50px;
+            margin-bottom: 20px;
+            display: block;
+            text-align: center;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        /* Pantalla 2: Hub (Medallón) */
+        .medallion-container {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .medallion {
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background: #e0dace;
+            /* Color Travertino */
+            border: 8px solid #D4AF37;
+            /* Bronce */
+            position: relative;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3);
+            transition: box-shadow 0.5s;
+        }
+
+        .medallion.completed {
+            box-shadow: 0 0 30px #D4AF37, 0 0 50px rgba(212, 175, 55, 0.5);
+            background: #fff8e1;
+        }
+
+        .fragment-slot {
+            width: 70px;
+            height: 70px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            position: absolute;
+            border: 2px dashed #999;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            /* Para apilar texto y estrellas */
+            font-size: 10px;
+            color: #555;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .fragment-slot:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .slot-1 {
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .slot-2 {
+            bottom: 40px;
+            left: 30px;
+        }
+
+        .slot-3 {
+            bottom: 40px;
+            right: 30px;
+        }
+
+        .slot-filled {
+            background: #D4AF37;
+            border: 2px solid #fff;
+            color: #000;
+            font-weight: bold;
+            font-size: 12px;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+            cursor: default;
+        }
+
+        /* Estrellas pequeñas en el Hub */
+        .mini-stars {
+            font-size: 8px;
+            color: #fff;
+            text-shadow: 0 0 2px #000;
+            margin-top: 2px;
+        }
+
+        /* Pantalla 3: Búsqueda */
+        .clue-card {
+            background: white;
+            padding: 10px;
+            border-radius: 15px;
+            text-align: center;
+            color: #333;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            text-shadow: none;
+            /* Reset shadow for black text */
+        }
+
+        .clue-img {
+            width: 80px;
+            height: 80px;
+            background: #ccc;
+            border-radius: 10px;
+            margin: 0 auto 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+            color: #666;
+        }
+
+        .reticle {
+            width: 200px;
+            height: 200px;
+            border: 2px solid rgba(255, 255, 255, 0.7);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 20px;
+        }
+
+        .reticle::after {
+            content: "Escaneando...";
+            position: absolute;
+            bottom: -25px;
+            width: 100%;
+            text-align: center;
+            color: white;
+            font-size: 12px;
+        }
+
+        .help-btn {
+            position: absolute;
+            bottom: 30px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            border: 2px solid white;
+            cursor: pointer;
+        }
+
+        /* Modales (Ayudas) */
+        .modal {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            /* Hidden by default */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            box-sizing: border-box;
+            z-index: 10;
+        }
+
+        .modal-content {
+            background: #fff;
+            color: #333;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            width: 100%;
+            position: relative;
+            text-shadow: none;
+            /* Reset shadow */
+        }
+
+        .map-placeholder {
+            width: 100%;
+            height: 150px;
+            background: #eef;
+            border: 2px solid #75AADB;
+            margin: 10px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #75AADB;
+            font-weight: bold;
+        }
+
+        #final-message {
+            display: none;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        /* Pantalla Final (WIN) */
+        .fireworks {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background-image:
+                radial-gradient(circle, #ff0 2px, transparent 2.5px),
+                radial-gradient(circle, #0ff 2px, transparent 2.5px),
+                radial-gradient(circle, #f0f 2px, transparent 2.5px);
+            background-size: 20% 20%, 30% 30%, 15% 15%;
+            background-position: 10% 20%, 80% 10%, 50% 50%;
+            opacity: 0;
+            animation: fireworkAnim 2s infinite;
+        }
+
+        @keyframes fireworkAnim {
+            0% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+
+            100% {
+                opacity: 0;
+                transform: scale(1.5);
+            }
+        }
+
+        .win-badge {
+            font-size: 100px;
+            filter: drop-shadow(0 0 10px gold);
+            animation: bounce 1s infinite alternate;
+        }
+
+        @keyframes bounce {
+            from {
+                transform: translateY(0);
+            }
+
+            to {
+                transform: translateY(-20px);
+            }
+        }
+
+        /* PUNTUACIÓN DE ESTRELLAS */
+        .stars-container {
+            font-size: 30px;
+            color: #FFD700;
+            /* Gold */
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+            margin: 10px 0;
+        }
+
+        .stars-label {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="phone-frame">
+
+        <!-- PANTALLA 1: HOME -->
+        <div id="screen-home" class="screen bg-monument active">
+            <div class="overlay">
+                <div class="logo-area">
+                    <span class="logo-icon">🏛️🇦🇷</span>
+                    <h1>DETECTIVES DEL<br>MONUMENTO</h1>
+                    <p>Recuperá los fragmentos perdidos de la historia.</p>
+                </div>
+                <div>
+                    <button class="btn" onclick="showScreen('screen-intro')">JUGAR</button>
+                    <p style="opacity: 0.8; font-size: 12px; margin-top: 10px;">Requiere acceso a cámara</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANTALLA 1.5: INTRODUCCIÓN -->
+        <div id="screen-intro" class="screen bg-intro">
+            <div class="overlay" style="justify-content: center;">
+                <div style="margin-bottom: 40px;">
+                    <span class="intro-icon">⚓</span>
+                    <h2>LA LEYENDA</h2>
+                    <p class="intro-text">
+                        El Monumento ha perdido su energía vital.<br><br>
+                        Tu misión es encontrar los 3 fragmentos.<br><br>
+                        <span style="font-size:14px; color:#FFD700;">⭐ Encuentra sin ayuda para ganar más puntos.</span>
+                    </p>
+                </div>
+                <button class="btn btn-gold" onclick="showScreen('screen-hub')">ACEPTAR MISIÓN</button>
+            </div>
+        </div>
+
+        <!-- PANTALLA 2: HUB (MEDALLÓN) -->
+        <div id="screen-hub" class="screen bg-monument">
+            <div class="overlay">
+                <h2>TU MISIÓN</h2>
+                <p id="hub-instruction">Tocá un espacio vacío para buscar ese fragmento.</p>
+
+                <div class="medallion-container">
+                    <div id="medallion-ring" class="medallion">
+                        <!-- Botones de Misiones -->
+                        <div id="slot-Friso" class="fragment-slot slot-1" onclick="startMission('Friso')">
+                            1<br>El Friso
+                        </div>
+                        <div id="slot-Pampa" class="fragment-slot slot-2" onclick="startMission('Pampa')">
+                            2<br>Pampa
+                        </div>
+                        <div id="slot-Urna" class="fragment-slot slot-3" onclick="startMission('Urna')">
+                            3<br>Urna
+                        </div>
+
+                        <!-- Decoración Centro -->
+                        <div
+                            style="position: absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size: 40px; opacity:0.3;">
+                            ⚓
+                        </div>
+                    </div>
+                </div>
+
+                <div id="status-text">0/3 Fragmentos</div>
+
+                <!-- Botón Final Secreto -->
+                <div id="final-message">
+                    <button class="btn btn-final" onclick="startFinalMission()">✨ ACTIVAR TORRE ✨</button>
+                    <p style="font-size: 11px; margin-top: 5px; color: #FFD700;">¡Energía al máximo!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANTALLA 3: BÚSQUEDA (CÁMARA) -->
+        <div id="screen-scan" class="screen bg-camera">
+
+            <!-- Tarjeta de Pista (Arriba) -->
+            <div style="padding: 15px;">
+                <div class="clue-card">
+                    <div style="display:flex; align-items: center; gap: 10px;">
+                        <div id="scan-icon" class="clue-img">🗿</div>
+                        <div style="text-align: left;">
+                            <strong style="font-size: 14px; display:block;">Busca este detalle</strong>
+                            <span id="scan-mission-name" style="font-size: 12px; color:#666;">Misión: ...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Retícula Central -->
+            <div class="reticle"></div>
+
+            <!-- Botones Abajo -->
+            <div style="position: absolute; bottom: 30px; width: 100%; text-align: center;">
+                <button class="btn btn-secondary"
+                    style="width: auto; padding: 10px 20px; display: inline-block; margin-right: 60px;"
+                    onclick="simulateFound()">
+                    [Simular Hallazgo]
+                </button>
+            </div>
+
+            <!-- Botón Ayuda -->
+            <div class="help-btn" onclick="showModal('modal-riddle')">?</div>
+
+            <!-- MODAL 1: ACERTIJO -->
+            <div id="modal-riddle" class="modal">
+                <div class="modal-content">
+                    <div style="position:absolute; top:10px; right:15px; cursor:pointer;"
+                        onclick="closeModal('modal-riddle')">✕</div>
+                    <h3>💡 Pista</h3>
+                    <p id="riddle-text" style="font-style: italic; color: #555;">...</p>
+
+                    <hr style="margin: 15px 0; border: 0; border-top: 1px solid #eee;">
+
+                    <button class="btn btn-gold" onclick="closeModal('modal-riddle')">¡Ya entendí!</button>
+                    <button class="btn btn-secondary" style="color:#333; border-color:#ccc; margin-top:10px;"
+                        onclick="openMapModal()">Sigo perdido... (-2 ⭐)</button>
+                </div>
+            </div>
+
+            <!-- MODAL 2: MAPA -->
+            <div id="modal-map" class="modal">
+                <div class="modal-content">
+                    <div style="position:absolute; top:10px; right:15px; cursor:pointer;"
+                        onclick="closeModal('modal-map')">✕</div>
+                    <h3>📍 Ubicación Exacta</h3>
+                    <div class="map-placeholder">
+                        [ MAPA ]<br>
+                        ❌ Estás aquí
+                    </div>
+                    <p id="map-text">Dirígete a la zona indicada.</p>
+                    <button class="btn btn-gold" onclick="closeModal('modal-map')">Ir ahora</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANTALLA 4: ÉXITO (Fragmento) -->
+        <div id="screen-success" class="screen bg-monument">
+            <div class="overlay" style="justify-content: center; align-items: center;">
+                <!-- Fondo semitransparente para esta pantalla para legibilidad -->
+                <div
+                    style="background: rgba(117, 170, 219, 0.95); padding: 30px; border-radius: 20px; width: 85%; display: flex; flex-direction: column; align-items: center;">
+                    <div style="font-size: 80px;">✨</div>
+                    <h1>¡ENCONTRADO!</h1>
+                    <p id="success-msg">Has recuperado un fragmento.</p>
+
+                    <!-- Puntuación Obtenida -->
+                    <div class="stars-container" id="success-stars">⭐⭐⭐</div>
+                    <div class="stars-label">PUNTUACIÓN</div>
+
+                    <div
+                        style="width: 80px; height: 80px; background: #D4AF37; border-radius: 50%; margin: 10px; display:flex; justify-content:center; align-items:center; font-size:30px; box-shadow: 0 0 30px white;">
+                        ✓
+                    </div>
+
+                    <button class="btn btn-gold" style="margin-top: 20px;" onclick="showScreen('screen-hub')">Volver al
+                        Medallón</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANTALLA 5: GRAN FINAL (Win) -->
+        <div id="screen-final-win" class="screen bg-final">
+            <div class="fireworks"></div>
+            <div class="overlay" style="justify-content: center; align-items: center;">
+                <div
+                    style="background: rgba(0,0,0,0.6); padding: 30px; border-radius: 20px; width: 85%; display: flex; flex-direction: column; align-items: center;">
+                    <div class="win-badge">🇦🇷</div>
+                    <h1 style="font-size: 32px; color: #75AADB; -webkit-text-stroke: 1px white;">¡MISIÓN CUMPLIDA!</h1>
+
+                    <div id="final-score-display"
+                        style="font-size: 24px; color: #FFD700; margin: 10px 0; font-weight: bold; text-shadow: 0 2px 4px #000;">
+                        --/9 Estrellas
+                    </div>
+
+                    <p style="font-size: 16px; margin-top: 10px;">Has liberado la historia del Monumento.</p>
+
+                    <div
+                        style="background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); padding: 20px; border-radius: 15px; margin: 20px 0; border: 1px solid rgba(255,255,255,0.5);">
+                        <p>📸 ¡Mirá la torre!</p>
+                        <small>Una bandera gigante flamea sobre ella.</small>
+                    </div>
+
+                    <button class="btn btn-gold" onclick="location.reload()">Jugar de nuevo</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- ESTADO DEL JUEGO ---
+        let gameState = {
+            'Friso': false,
+            'Pampa': false,
+            'Urna': false
+        };
+        // Nuevo: Guardamos el puntaje de cada misión (0 a 3)
+        let missionScores = {
+            'Friso': 0,
+            'Pampa': 0,
+            'Urna': 0
+        };
+
+        let currentMission = '';
+        let currentSessionScore = 3; // Puntos de la misión actual en curso
+
+        const missionDetails = {
+            'Friso': {
+                name: 'El Friso',
+                riddle: '"Aquí la historia no se escribió con tinta, sino con cincel. Buscá en las paredes laterales del patio."',
+                map: 'Pared lateral derecha mirando al río.',
+                icon: '🗿',
+                context: 'los bajorrelieves de piedra blanca que muestran a Belgrano y sus soldados'
+            },
+            'Pampa': {
+                name: 'La Pampa',
+                riddle: '"No soy montaña, soy llanura. Buscá al buey junto a la estatua gigante."',
+                map: 'Lateral Oeste del Patio Cívico.',
+                icon: '🐂',
+                context: 'la escultura alegórica gigante de La Pampa y su buey de bronce'
+            },
+            'Urna': {
+                name: 'La Urna',
+                riddle: '"Mi fuego nunca se apaga. Vivo bajo el techo de columnas del Propileo."',
+                map: 'Arriba de las escalinatas, al fondo.',
+                icon: '🔥',
+                context: 'la Llama Votiva que arde eternamente sobre la tumba del Soldado Desconocido'
+            },
+            'Final': {
+                name: 'La Gran Torre',
+                riddle: '"Soy el mástil de piedra más alto. Mirame desde el centro del Patio Cívico."',
+                map: 'Párate en el centro del Patio y mira hacia arriba.',
+                icon: '🗼',
+                context: 'la Torre Central del Monumento a la Bandera'
+            }
+        };
+
+        // Función para bajar puntaje (nunca subir)
+        function reduceScore(maxPossible) {
+            if (currentSessionScore > maxPossible) {
+                currentSessionScore = maxPossible;
+                console.log("Puntaje reducido a: " + currentSessionScore);
+            }
+        }
+
+        // Función Helper para generar string de estrellas
+        function getStarsString(count) {
+            let s = "";
+            for (let i = 0; i < count; i++) s += "⭐";
+            return s || "-"; // Si es 0 retorna guión
+        }
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+
+            if (screenId === 'screen-hub') {
+                updateHubUI();
+            }
+        }
+
+        function startMission(missionName) {
+            if (gameState[missionName]) return;
+
+            currentMission = missionName;
+            currentSessionScore = 3; // Resetear puntaje al iniciar misión
+
+            setupScanScreen(missionName);
+            showScreen('screen-scan');
+        }
+
+        function startFinalMission() {
+            currentMission = 'Final';
+            setupScanScreen('Final');
+            showScreen('screen-scan');
+        }
+
+        function setupScanScreen(missionKey) {
+            const data = missionDetails[missionKey];
+            document.getElementById('scan-mission-name').innerText = missionKey === 'Final' ? "OBJETIVO FINAL" : `Misión: ${data.name}`;
+            document.getElementById('scan-icon').innerText = data.icon;
+            document.getElementById('riddle-text').innerText = data.riddle;
+            document.getElementById('map-text').innerText = data.map;
+
+            if (missionKey === 'Final') {
+                document.querySelector('.clue-card strong').innerText = "Enfoca la Torre completa";
+            } else {
+                document.querySelector('.clue-card strong').innerText = "Busca este detalle";
+            }
+        }
+
+        function simulateFound() {
+            if (currentMission === 'Final') {
+                showFinalWin();
+                return;
+            }
+
+            // Guardar Estado y Puntaje
+            gameState[currentMission] = true;
+            missionScores[currentMission] = currentSessionScore;
+
+            // Actualizar UI de Éxito
+            document.getElementById('success-msg').innerText = `Has recuperado el fragmento de ${missionDetails[currentMission].name}.`;
+            document.getElementById('success-stars').innerText = getStarsString(currentSessionScore);
+
+            showScreen('screen-success');
+        }
+
+        function showFinalWin() {
+            // Calcular Total
+            let totalScore = 0;
+            Object.values(missionScores).forEach(score => totalScore += score);
+
+            document.getElementById('final-score-display').innerText = `${totalScore}/9 Estrellas`;
+            showScreen('screen-final-win');
+        }
+
+        function updateHubUI() {
+            let count = 0;
+            const total = 3;
+
+            for (const [key, done] of Object.entries(gameState)) {
+                const slot = document.getElementById(`slot-${key}`);
+                if (done) {
+                    slot.classList.add('slot-filled');
+                    // Mostrar tick y abajo las estrellas
+                    const stars = getStarsString(missionScores[key]);
+                    slot.innerHTML = `✓<br>${key}<div class="mini-stars">${stars}</div>`;
+                    count++;
+                }
+            }
+
+            const statusText = document.getElementById('status-text');
+            statusText.innerText = `${count}/${total} Fragmentos`;
+
+            if (count === total) {
+                document.getElementById('medallion-ring').classList.add('completed');
+                document.getElementById('hub-instruction').innerText = "¡Energía completa! Dirígete al patio.";
+                document.getElementById('final-message').style.display = 'block';
+                statusText.style.color = '#D4AF37';
+                statusText.style.fontWeight = 'bold';
+            }
+        }
+
+        function showModal(modalId) { document.getElementById(modalId).style.display = 'flex'; }
+        function closeModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
+
+        function openMapModal() {
+            // Penalización mayor por ver mapa
+            reduceScore(1);
+            closeModal('modal-riddle');
+            showModal('modal-map');
+        }
+
+    </script>
+</body>
+
+</html>

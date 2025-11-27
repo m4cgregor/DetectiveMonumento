@@ -1,0 +1,21 @@
+# PLACEHOLDER - Target Image Required
+
+This is a placeholder file. You need to replace this with an actual photo of the monument detail.
+
+## Instructions:
+
+1. Take a high-quality photo of the **Friso (stone relief carving)** at the monument
+2. Ensure the image has:
+   - High resolution (at least 480x640 pixels)
+   - Good contrast and clear details
+   - Even lighting (no shadows or glare)
+   - Sharp focus
+
+3. Save the photo as `target-friso.png` or `target-friso.jpg`
+4. Replace this file with your photo
+5. Use the MindAR compiler to create `targets.mind`
+
+See `AR_SETUP_GUIDE.md` for detailed instructions.
+
+## MindAR Compiler:
+https://hiukim.github.io/mind-ar-js-doc/tools/compile

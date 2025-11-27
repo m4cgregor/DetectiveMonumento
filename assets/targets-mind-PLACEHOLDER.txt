@@ -1,0 +1,58 @@
+# PLACEHOLDER - Compiled Target File Required
+
+This file should be generated using the MindAR Image Target Compiler.
+
+## How to Create This File:
+
+### Option 1: Online Compiler (Easiest)
+
+1. Go to: https://hiukim.github.io/mind-ar-js-doc/tools/compile
+
+2. Upload your 4 target images **in this exact order**:
+   - target-friso.png (becomes targetIndex 0)
+   - target-pampa.png (becomes targetIndex 1)
+   - target-urna.png (becomes targetIndex 2)
+   - target-torre.png (becomes targetIndex 3)
+
+3. Click "Start" and wait for compilation
+
+4. Download the generated file as `targets.mind`
+
+5. Replace this placeholder file with the downloaded `targets.mind`
+
+### Option 2: Command Line
+
+```bash
+# Install the compiler
+npm install -g mind-ar-cli
+
+# Compile your images
+mind-ar-compiler \
+  assets/target-friso.png \
+  assets/target-pampa.png \
+  assets/target-urna.png \
+  assets/target-torre.png \
+  assets/targets
+```
+
+This will create `assets/targets.mind`.
+
+## Important Notes:
+
+- ⚠️ **Order matters!** The first image becomes targetIndex 0, etc.
+- ✅ Use high-quality images (300+ DPI, good contrast)
+- ✅ Images should have clear, distinctive features
+- ✅ Avoid blurry, low-contrast, or plain images
+
+## Need Help?
+
+See `AR_SETUP_GUIDE.md` for detailed instructions and troubleshooting.
+
+## Verification:
+
+Once you have `targets.mind`:
+1. It should be a binary file (not text)
+2. File size typically 100KB - 2MB depending on image complexity
+3. The AR game will load it automatically
+
+**The game will NOT work without this file!**
