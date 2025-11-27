@@ -135,11 +135,41 @@
         .ar-btn:active {
             transform: scale(0.95);
         }
-
         .ar-btn-primary {
             background: rgba(117, 170, 219, 0.9);
             border-color: #75AADB;
         }
+
+        /* Target Image Preview */
+        .target-preview {
+            position: absolute;
+            top: 100px;
+            right: 20px;
+            width: 120px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            pointer-events: none;
+        }
+
+        .target-preview img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .target-preview-label {
+            color: white;
+            font-size: 10px;
+            text-align: center;
+            opacity: 0.9;
+            font-weight: bold;
+        }
+
 
         /* Regular UI Screens */
         .screen {
@@ -514,6 +544,12 @@
         <div id="ar-detection-status" class="ar-detection-status">
             ✓ ¡Objetivo detectado!
         </div>
+        <!-- Target Image Preview -->
+        <div id="target-preview" class="target-preview">
+            <img id="target-preview-img" src="" alt="Target">
+            <div class="target-preview-label">BUSCA ESTO</div>
+        </div>
+
 
         <div class="ar-buttons">
             <button class="ar-btn" onclick="exitAR()">← Volver</button>
@@ -649,10 +685,10 @@
         let detectionTimeout = null;
 
         const missionDetails = {
-            'Friso': { name: 'El Friso', targetIndex: 0, hint: 'Busca los bajorrelieves de piedra blanca en las paredes laterales' },
-            'Pampa': { name: 'La Pampa', targetIndex: 1, hint: 'Busca la escultura gigante con el buey de bronce' },
-            'Urna': { name: 'La Urna', targetIndex: 2, hint: 'Busca la Llama Votiva que arde eternamente' },
-            'Final': { name: 'La Gran Torre', targetIndex: 3, hint: 'Enfoca la Torre Central completa desde el patio' }
+            'Friso': { name: 'El Friso', targetIndex: 0, hint: 'Busca los bajorrelieves de piedra blanca en las paredes laterales', targetImage: './assets/target-friso.png' },
+            'Pampa': { name: 'La Pampa', targetIndex: 1, hint: 'Busca la escultura gigante con el buey de bronce', targetImage: './assets/target-pampa.png' },
+            'Urna': { name: 'La Urna', targetIndex: 2, hint: 'Busca la Llama Votiva que arde eternamente', targetImage: './assets/target-urna.png' },
+            'Final': { name: 'La Gran Torre', targetIndex: 3, hint: 'Enfoca la Torre Central completa desde el patio', targetImage: './assets/target-torre.png' }
         };
 
         // --- AR INITIALIZATION ---
@@ -754,6 +790,12 @@
             const data = missionDetails[missionKey];
             document.getElementById('ar-mission-name').innerText = data.name;
             document.getElementById('ar-mission-hint').innerText = data.hint;
+            
+            // Update target preview image
+            const targetPreviewImg = document.getElementById('target-preview-img');
+            if (data.targetImage) {
+                targetPreviewImg.src = data.targetImage;
+            }
         }
 
         function startAR() {
