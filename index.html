@@ -485,6 +485,26 @@
             margin-bottom: 5px;
         }
     </style>
+    <style>
+        .ar-detection-status {
+            position: absolute;
+            bottom: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(117, 170, 219, 0.9);
+            padding: 10px 20px;
+            border-radius: 25px;
+            color: white;
+            font-weight: bold;
+            display: none;
+            animation: pulse 1.5s infinite;
+            z-index: 20;
+        }
+
+        .ar-detection-status.active {
+            display: block;
+        }
+    </style>
 </head>
 
 <body>
@@ -577,18 +597,6 @@
 
             <!-- Retícula Central -->
             <div class="reticle"></div>
-
-            <!-- Botones Abajo -->
-            <div style="position: absolute; bottom: 30px; width: 100%; text-align: center;">
-                <button class="btn btn-secondary"
-                    style="width: auto; padding: 10px 20px; display: inline-block; margin-right: 60px;"
-                    onclick="simulateFound()">
-                    [Simular Hallazgo]
-                </button>
-            </div>
-
-            <!-- Botón Ayuda -->
-            <div class="help-btn" onclick="showModal('modal-riddle')">?</div>
 
             <!-- MODAL 1: ACERTIJO -->
             <div id="modal-riddle" class="modal">
@@ -755,6 +763,22 @@
             currentSessionScore = 3; // Resetear puntaje al iniciar misión
 
             setupScanScreen(missionName);
+
+            // Reset button state (Robust fix)
+            let btn = document.getElementById('btn-simulate');
+            if (!btn) {
+                let buttons = document.querySelectorAll('#screen-scan .btn-secondary');
+                if (buttons.length > 0) btn = buttons[0];
+                if (btn) btn.id = 'btn-simulate';
+            }
+            if (btn) {
+                btn.innerText = "[Simular Hallazgo]";
+                btn.onclick = simulateFound;
+                btn.classList.remove('btn-gold');
+                btn.classList.add('btn-secondary');
+            }
+            document.getElementById('sim-detection-status').classList.remove('active');
+
             showScreen('screen-scan');
         }
 
@@ -784,6 +808,17 @@
                 return;
             }
 
+            // Simular Detección (Paso 1)
+            document.getElementById('sim-detection-status').classList.add('active');
+
+            const btn = document.getElementById('btn-simulate');
+            btn.innerText = "✓ Confirmar Hallazgo";
+            btn.onclick = confirmFoundSim;
+            btn.classList.remove('btn-secondary');
+            btn.classList.add('btn-gold');
+        }
+
+        function confirmFoundSim() {
             // Guardar Estado y Puntaje
             gameState[currentMission] = true;
             missionScores[currentMission] = currentSessionScore;
