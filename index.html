@@ -49,51 +49,15 @@
         .bg-camera {
             background-color: #555;
             /* Color base por si falla la imagen */
-            background-image: url('https://images.unsplash.com/photo-1596495578065-6e0763fa1178?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80');
-            background-size: cover;
-            background-position: center;
-            filter: grayscale(80%);
         }
 
-        /* Fondo Monumento (General) */
-        .bg-monument {
-            background-color: #1a1a1a;
-            /* Color base */
-            /* Gradiente oscuro sobre la imagen para que se lea el texto */
-            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('assets/monumento-bkg.png');
-            background-size: cover;
-            background-position: center;
+        50% {
+            background-position: top;
         }
 
-        /* Fondo Final (Animado) */
-        .bg-final {
-            background-color: #0d1b2a;
-            background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('assets/monumento-bkg.png');
-            background-size: cover;
-            background-position: center;
-            animation: panBackground 20s infinite linear;
-        }
-
-        /* Fondo Intro (Más oscuro) */
-        .bg-intro {
-            background-color: #000;
-            background-image: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.7)), url('assets/monumento-bkg.png');
-            background-size: cover;
+        100% {
             background-position: center;
         }
-
-        @keyframes panBackground {
-            0% {
-                background-position: center;
-            }
-
-            50% {
-                background-position: top;
-            }
-
-            100% {
-                background-position: center;
-            }
         }
 
         /* Elementos UI Generales */
