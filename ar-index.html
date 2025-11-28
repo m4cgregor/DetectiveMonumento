@@ -513,436 +513,385 @@
     <div id="ar-scene-container">
         <a-scene
             mindar-image="imageTargetSrc: ./assets/targets.mind; autoStart: false; uiLoading: no; uiError: no; uiScanning: no;"
-            color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false"
-            device-orientation-permission-ui="enabled: false">
+            <!-- AR Overlay UI -->
+            <div id="ar-overlay" class="ar-overlay">
+                <div class="ar-ui-top">
+                    <h3 id="ar-mission-name">Busca el detalle</h3>
+                    <p id="ar-mission-hint">Apunta la cámara al monumento</p>
+                </div>
 
-            <a-assets>
-                <!-- 3D Models for each mission -->
-                <a-asset-item id="model-friso" src="./assets/fragment-friso.gltf"></a-asset-item>
-                <a-asset-item id="model-pampa" src="./assets/fragment-pampa.gltf"></a-asset-item>
-                <a-asset-item id="model-urna" src="./assets/fragment-urna.gltf"></a-asset-item>
-                <a-asset-item id="model-torre" src="./assets/tower-complete.gltf"></a-asset-item>
-            </a-assets>
+                <div id="ar-detection-status" class="ar-detection-status">
+                    ✓ ¡Objetivo detectado!
+                </div>
 
-            <a-camera position="0 0 0" look-controls="enabled: false"
-                cursor="fuse: false; rayOrigin: mouse;"></a-camera>
-
-            <!-- Target 0: Friso -->
-            <a-entity id="target-friso" mindar-image-target="targetIndex: 0">
-                <a-gltf-model rotation="0 0 0" position="0 0 0" scale="0.3 0.3 0.3" src="#model-friso"
-                    animation="property: rotation; to: 0 360 0; loop: true; dur: 10000; easing: linear">
-                </a-gltf-model>
-                <a-text value="Fragmento del Friso" position="0 -0.3 0" align="center" color="#FFD700"
-                    scale="0.5 0.5 0.5">
-                </a-text>
-            </a-entity>
-
-            <!-- Target 1: Pampa -->
-            <a-entity id="target-pampa" mindar-image-target="targetIndex: 1">
-                <a-gltf-model rotation="0 0 0" position="0 0 0" scale="0.3 0.3 0.3" src="#model-pampa"
-                    animation="property: rotation; to: 0 360 0; loop: true; dur: 10000; easing: linear">
-                </a-gltf-model>
-                <a-text value="Fragmento de la Pampa" position="0 -0.3 0" align="center" color="#FFD700"
-                    scale="0.5 0.5 0.5">
-                </a-text>
-            </a-entity>
-
-            <!-- Target 2: Urna -->
-            <a-entity id="target-urna" mindar-image-target="targetIndex: 2">
-                <a-gltf-model rotation="0 0 0" position="0 0 0" scale="0.3 0.3 0.3" src="#model-urna"
-                    animation="property: rotation; to: 0 360 0; loop: true; dur: 10000; easing: linear">
-                </a-gltf-model>
-                <a-text value="Fragmento de la Urna" position="0 -0.3 0" align="center" color="#FFD700"
-                    scale="0.5 0.5 0.5">
-                </a-text>
-            </a-entity>
-
-            <!-- Target 3: Torre Final -->
-            <a-entity id="target-torre" mindar-image-target="targetIndex: 3">
-                <a-gltf-model rotation="0 0 0" position="0 0 0.2" scale="0.5 0.5 0.5" src="#model-torre"
-                    animation="property: position; to: 0 0.1 0.2; dur: 2000; easing: easeInOutQuad; loop: true; dir: alternate">
-                </a-gltf-model>
-                <a-text value="¡TORRE ACTIVADA!" position="0 -0.4 0" align="center" color="#FFD700" scale="0.6 0.6 0.6">
-                </a-text>
-            </a-entity>
-        </a-scene>
-    </div>
-
-    <!-- AR Overlay UI -->
-    <div id="ar-overlay" class="ar-overlay">
-        <div class="ar-ui-top">
-            <h3 id="ar-mission-name">Busca el detalle</h3>
-            <p id="ar-mission-hint">Apunta la cámara al monumento</p>
-        </div>
-
-        <div id="ar-detection-status" class="ar-detection-status">
-            ✓ ¡Objetivo detectado!
-        </div>
-
-        <div class="ar-buttons">
-            <button class="ar-btn" onclick="exitAR()">← Volver</button>
-            <button id="ar-confirm-btn" class="ar-btn ar-btn-primary" onclick="confirmFound()" style="display: none;">
-                ✓ Confirmar Hallazgo
-            </button>
-        </div>
-    </div>
-
-    <!-- SCREEN 1: HOME -->
-    <div id="screen-home" class="screen bg-monument active">
-        <div class="overlay">
-            <div class="logo-area">
-                <span class="logo-icon">🏛️🇦🇷</span>
-                <h1>DETECTIVES DEL<br>MONUMENTO</h1>
-                <p>Recuperá los fragmentos perdidos de la historia.</p>
+                <div class="ar-buttons">
+                    <button class="ar-btn" onclick="exitAR()">← Volver</button>
+                    <button id="ar-confirm-btn" class="ar-btn ar-btn-primary" onclick="confirmFound()"
+                        style="display: none;">
+                        ✓ Confirmar Hallazgo
+                    </button>
+                </div>
             </div>
-            <div>
-                <button class="btn" onclick="showScreen('screen-intro')">JUGAR</button>
-                <p style="opacity: 0.8; font-size: 12px; margin-top: 10px;">Requiere acceso a cámara</p>
+
+            <!-- SCREEN 1: HOME -->
+            <div id="screen-home" class="screen bg-monument active">
+                <div class="overlay">
+                    <div class="logo-area">
+                        <span class="logo-icon">🏛️🇦🇷</span>
+                        <h1>DETECTIVES DEL<br>MONUMENTO</h1>
+                        <p>Recuperá los fragmentos perdidos de la historia.</p>
+                    </div>
+                    <div>
+                        <button class="btn" onclick="showScreen('screen-intro')">JUGAR</button>
+                        <p style="opacity: 0.8; font-size: 12px; margin-top: 10px;">Requiere acceso a cámara</p>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
 
-    <!-- SCREEN 2: INTRO -->
-    <div id="screen-intro" class="screen bg-intro">
-        <div class="overlay" style="justify-content: center;">
-            <div style="margin-bottom: 40px;">
-                <span class="intro-icon">⚓</span>
-                <h2>LA LEYENDA</h2>
-                <p class="intro-text">
-                    El Monumento ha perdido su energía vital.<br><br>
-                    Tu misión es encontrar los 3 fragmentos usando AR.<br><br>
-                    <span style="font-size:14px; color:#FFD700;">⭐ Encuentra sin ayuda para ganar más puntos.</span>
-                </p>
+            <!-- SCREEN 2: INTRO -->
+            <div id="screen-intro" class="screen bg-intro">
+                <div class="overlay" style="justify-content: center;">
+                    <div style="margin-bottom: 40px;">
+                        <span class="intro-icon">⚓</span>
+                        <h2>LA LEYENDA</h2>
+                        <p class="intro-text">
+                            El Monumento ha perdido su energía vital.<br><br>
+                            Tu misión es encontrar los 3 fragmentos usando AR.<br><br>
+                            <span style="font-size:14px; color:#FFD700;">⭐ Encuentra sin ayuda para ganar más
+                                puntos.</span>
+                        </p>
+                    </div>
+                    <button class="btn btn-gold" onclick="showScreen('screen-hub')">ACEPTAR MISIÓN</button>
+                </div>
             </div>
-            <button class="btn btn-gold" onclick="showScreen('screen-hub')">ACEPTAR MISIÓN</button>
-        </div>
-    </div>
 
-    <!-- SCREEN 3: HUB (MEDALLÓN) -->
-    <div id="screen-hub" class="screen bg-monument">
-        <div class="overlay">
-            <h2>TU MISIÓN</h2>
-            <p id="hub-instruction">Tocá un espacio vacío para buscar ese fragmento.</p>
+            <!-- SCREEN 3: HUB (MEDALLÓN) -->
+            <div id="screen-hub" class="screen bg-monument">
+                <div class="overlay">
+                    <h2>TU MISIÓN</h2>
+                    <p id="hub-instruction">Tocá un espacio vacío para buscar ese fragmento.</p>
 
-            <div class="medallion-container">
-                <div id="medallion-ring" class="medallion">
-                    <div id="slot-Friso" class="fragment-slot slot-1" onclick="startMission('Friso')">
-                        1<br>El Friso
+                    <div class="medallion-container">
+                        <div id="medallion-ring" class="medallion">
+                            <div id="slot-Friso" class="fragment-slot slot-1" onclick="startMission('Friso')">
+                                1<br>El Friso
+                            </div>
+                            <div id="slot-Pampa" class="fragment-slot slot-2" onclick="startMission('Pampa')">
+                                2<br>Pampa
+                            </div>
+                            <div id="slot-Urna" class="fragment-slot slot-3" onclick="startMission('Urna')">
+                                3<br>Urna
+                            </div>
+                            <div
+                                style="position: absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size: 40px; opacity:0.3;">
+                                ⚓
+                            </div>
+                        </div>
                     </div>
-                    <div id="slot-Pampa" class="fragment-slot slot-2" onclick="startMission('Pampa')">
-                        2<br>Pampa
+
+                    <div id="status-text">0/3 Fragmentos</div>
+
+                    <div id="final-message">
+                        <button class="btn btn-final" onclick="startFinalMission()">✨ ACTIVAR TORRE ✨</button>
+                        <p style="font-size: 11px; margin-top: 5px; color: #FFD700;">¡Energía al máximo!</p>
                     </div>
-                    <div id="slot-Urna" class="fragment-slot slot-3" onclick="startMission('Urna')">
-                        3<br>Urna
-                    </div>
+                </div>
+            </div>
+
+            <!-- SCREEN 4: SUCCESS -->
+            <div id="screen-success" class="screen bg-monument">
+                <div class="overlay" style="justify-content: center; align-items: center;">
                     <div
-                        style="position: absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size: 40px; opacity:0.3;">
-                        ⚓
+                        style="background: rgba(117, 170, 219, 0.95); padding: 30px; border-radius: 20px; width: 85%; display: flex; flex-direction: column; align-items: center;">
+                        <div style="font-size: 80px;">✨</div>
+                        <h1>¡ENCONTRADO!</h1>
+                        <p id="success-msg">Has recuperado un fragmento.</p>
+
+                        <div class="stars-container" id="success-stars">⭐⭐⭐</div>
+                        <div class="stars-label">PUNTUACIÓN</div>
+
+                        <div
+                            style="width: 80px; height: 80px; background: #D4AF37; border-radius: 50%; margin: 10px; display:flex; justify-content:center; align-items:center; font-size:30px; box-shadow: 0 0 30px white;">
+                            ✓
+                        </div>
+
+                        <button class="btn btn-gold" style="margin-top: 20px;" onclick="showScreen('screen-hub')">Volver
+                            al
+                            Medallón</button>
                     </div>
                 </div>
             </div>
 
-            <div id="status-text">0/3 Fragmentos</div>
+            <!-- SCREEN 5: FINAL WIN -->
+            <div id="screen-final-win" class="screen bg-final">
+                <div class="fireworks"></div>
+                <div class="overlay" style="justify-content: center; align-items: center;">
+                    <div
+                        style="background: rgba(0,0,0,0.6); padding: 30px; border-radius: 20px; width: 85%; display: flex; flex-direction: column; align-items: center;">
+                        <div class="win-badge">🇦🇷</div>
+                        <h1 style="font-size: 32px; color: #75AADB; -webkit-text-stroke: 1px white;">¡MISIÓN CUMPLIDA!
+                        </h1>
 
-            <div id="final-message">
-                <button class="btn btn-final" onclick="startFinalMission()">✨ ACTIVAR TORRE ✨</button>
-                <p style="font-size: 11px; margin-top: 5px; color: #FFD700;">¡Energía al máximo!</p>
-            </div>
-        </div>
-    </div>
+                        <div id="final-score-display"
+                            style="font-size: 24px; color: #FFD700; margin: 10px 0; font-weight: bold; text-shadow: 0 2px 4px #000;">
+                            --/9 Estrellas
+                        </div>
 
-    <!-- SCREEN 4: SUCCESS -->
-    <div id="screen-success" class="screen bg-monument">
-        <div class="overlay" style="justify-content: center; align-items: center;">
-            <div
-                style="background: rgba(117, 170, 219, 0.95); padding: 30px; border-radius: 20px; width: 85%; display: flex; flex-direction: column; align-items: center;">
-                <div style="font-size: 80px;">✨</div>
-                <h1>¡ENCONTRADO!</h1>
-                <p id="success-msg">Has recuperado un fragmento.</p>
+                        <p style="font-size: 16px; margin-top: 10px;">Has liberado la historia del Monumento.</p>
 
-                <div class="stars-container" id="success-stars">⭐⭐⭐</div>
-                <div class="stars-label">PUNTUACIÓN</div>
+                        <div
+                            style="background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); padding: 20px; border-radius: 15px; margin: 20px 0; border: 1px solid rgba(255,255,255,0.5);">
+                            <p>📸 ¡Mirá la torre!</p>
+                            <small>Una bandera gigante flamea sobre ella.</small>
+                        </div>
 
-                <div
-                    style="width: 80px; height: 80px; background: #D4AF37; border-radius: 50%; margin: 10px; display:flex; justify-content:center; align-items:center; font-size:30px; box-shadow: 0 0 30px white;">
-                    ✓
+                        <button class="btn btn-gold" onclick="location.reload()">Jugar de nuevo</button>
+                    </div>
                 </div>
-
-                <button class="btn btn-gold" style="margin-top: 20px;" onclick="showScreen('screen-hub')">Volver al
-                    Medallón</button>
             </div>
-        </div>
-    </div>
 
-    <!-- SCREEN 5: FINAL WIN -->
-    <div id="screen-final-win" class="screen bg-final">
-        <div class="fireworks"></div>
-        <div class="overlay" style="justify-content: center; align-items: center;">
-            <div
-                style="background: rgba(0,0,0,0.6); padding: 30px; border-radius: 20px; width: 85%; display: flex; flex-direction: column; align-items: center;">
-                <div class="win-badge">🇦🇷</div>
-                <h1 style="font-size: 32px; color: #75AADB; -webkit-text-stroke: 1px white;">¡MISIÓN CUMPLIDA!</h1>
+            <script>
+                // --- GAME STATE ---
+                let gameState = {
+                    'Friso': false,
+                    'Pampa': false,
+                    'Urna': false
+                };
 
-                <div id="final-score-display"
-                    style="font-size: 24px; color: #FFD700; margin: 10px 0; font-weight: bold; text-shadow: 0 2px 4px #000;">
-                    --/9 Estrellas
-                </div>
+                let missionScores = {
+                    'Friso': 0,
+                    'Pampa': 0,
+                    'Urna': 0
+                };
 
-                <p style="font-size: 16px; margin-top: 10px;">Has liberado la historia del Monumento.</p>
+                let currentMission = '';
+                let currentSessionScore = 3;
+                let arSceneReady = false;
+                let currentTargetDetected = false;
+                let detectionTimeout = null;
 
-                <div
-                    style="background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); padding: 20px; border-radius: 15px; margin: 20px 0; border: 1px solid rgba(255,255,255,0.5);">
-                    <p>📸 ¡Mirá la torre!</p>
-                    <small>Una bandera gigante flamea sobre ella.</small>
-                </div>
+                const missionDetails = {
+                    'Friso': {
+                        name: 'El Friso',
+                        targetIndex: 0,
+                        hint: 'Busca los bajorrelieves de piedra blanca en las paredes laterales'
+                    },
+                    'Pampa': {
+                        name: 'La Pampa',
+                        targetIndex: 1,
+                        hint: 'Busca la escultura gigante con el buey de bronce'
+                    },
+                    'Urna': {
+                        name: 'La Urna',
+                        targetIndex: 2,
+                        hint: 'Busca la Llama Votiva que arde eternamente'
+                    },
+                    'Final': {
+                        name: 'La Gran Torre',
+                        targetIndex: 3,
+                        hint: 'Enfoca la Torre Central completa desde el patio'
+                    }
+                };
 
-                <button class="btn btn-gold" onclick="location.reload()">Jugar de nuevo</button>
-            </div>
-        </div>
-    </div>
+                // --- AR INITIALIZATION ---
+                document.addEventListener('DOMContentLoaded', function () {
+                    const sceneEl = document.querySelector('a-scene');
 
-    <script>
-        // --- GAME STATE ---
-        let gameState = {
-            'Friso': false,
-            'Pampa': false,
-            'Urna': false
-        };
+                    if (sceneEl) {
+                        sceneEl.addEventListener('loaded', function () {
+                            console.log('A-Frame scene loaded');
+                            arSceneReady = true;
+                            document.getElementById('loading-screen').classList.add('hidden');
+                        });
 
-        let missionScores = {
-            'Friso': 0,
-            'Pampa': 0,
-            'Urna': 0
-        };
-
-        let currentMission = '';
-        let currentSessionScore = 3;
-        let arSceneReady = false;
-        let currentTargetDetected = false;
-        let detectionTimeout = null;
-
-        const missionDetails = {
-            'Friso': {
-                name: 'El Friso',
-                targetIndex: 0,
-                hint: 'Busca los bajorrelieves de piedra blanca en las paredes laterales'
-            },
-            'Pampa': {
-                name: 'La Pampa',
-                targetIndex: 1,
-                hint: 'Busca la escultura gigante con el buey de bronce'
-            },
-            'Urna': {
-                name: 'La Urna',
-                targetIndex: 2,
-                hint: 'Busca la Llama Votiva que arde eternamente'
-            },
-            'Final': {
-                name: 'La Gran Torre',
-                targetIndex: 3,
-                hint: 'Enfoca la Torre Central completa desde el patio'
-            }
-        };
-
-        // --- AR INITIALIZATION ---
-        document.addEventListener('DOMContentLoaded', function () {
-            const sceneEl = document.querySelector('a-scene');
-
-            if (sceneEl) {
-                sceneEl.addEventListener('loaded', function () {
-                    console.log('A-Frame scene loaded');
-                    arSceneReady = true;
-                    document.getElementById('loading-screen').classList.add('hidden');
+                        // Setup target detection listeners
+                        setupARListeners();
+                    }
                 });
 
-                // Setup target detection listeners
-                setupARListeners();
-            }
-        });
+                function setupARListeners() {
+                    const targets = ['friso', 'pampa', 'urna', 'torre'];
 
-        function setupARListeners() {
-            const targets = ['friso', 'pampa', 'urna', 'torre'];
+                    targets.forEach((targetName, index) => {
+                        const targetEl = document.getElementById(`target-${targetName}`);
+                        if (targetEl) {
+                            targetEl.addEventListener('targetFound', () => {
+                                console.log(`Target found: ${targetName}`);
+                                onTargetFound(targetName, index);
+                            });
 
-            targets.forEach((targetName, index) => {
-                const targetEl = document.getElementById(`target-${targetName}`);
-                if (targetEl) {
-                    targetEl.addEventListener('targetFound', () => {
-                        console.log(`Target found: ${targetName}`);
-                        onTargetFound(targetName, index);
-                    });
-
-                    targetEl.addEventListener('targetLost', () => {
-                        console.log(`Target lost: ${targetName}`);
-                        onTargetLost();
+                            targetEl.addEventListener('targetLost', () => {
+                                console.log(`Target lost: ${targetName}`);
+                                onTargetLost();
+                            });
+                        }
                     });
                 }
-            });
-        }
 
-        function onTargetFound(targetName, targetIndex) {
-            // Check if this is the correct target for current mission
-            const missionKey = currentMission;
-            const expectedIndex = missionDetails[missionKey]?.targetIndex;
+                function onTargetFound(targetName, targetIndex) {
+                    // Check if this is the correct target for current mission
+                    const missionKey = currentMission;
+                    const expectedIndex = missionDetails[missionKey]?.targetIndex;
 
-            if (targetIndex === expectedIndex) {
-                currentTargetDetected = true;
-                document.getElementById('ar-detection-status').classList.add('active');
-                document.getElementById('ar-confirm-btn').style.display = 'block';
+                    if (targetIndex === expectedIndex) {
+                        currentTargetDetected = true;
+                        document.getElementById('ar-detection-status').classList.add('active');
+                        document.getElementById('ar-confirm-btn').style.display = 'block';
 
-                // Auto-confirm after 2 seconds of stable detection
-                if (detectionTimeout) clearTimeout(detectionTimeout);
-                detectionTimeout = setTimeout(() => {
-                    if (currentTargetDetected) {
-                        confirmFound();
+                        // Auto-confirm after 2 seconds of stable detection
+                        if (detectionTimeout) clearTimeout(detectionTimeout);
+                        detectionTimeout = setTimeout(() => {
+                            if (currentTargetDetected) {
+                                confirmFound();
+                            }
+                        }, 2000);
                     }
-                }, 2000);
-            }
-        }
-
-        function onTargetLost() {
-            currentTargetDetected = false;
-            document.getElementById('ar-detection-status').classList.remove('active');
-            document.getElementById('ar-confirm-btn').style.display = 'none';
-
-            if (detectionTimeout) {
-                clearTimeout(detectionTimeout);
-                detectionTimeout = null;
-            }
-        }
-
-        // --- SCREEN MANAGEMENT ---
-        function showScreen(screenId) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(screenId).classList.add('active');
-
-            if (screenId === 'screen-hub') {
-                updateHubUI();
-            }
-        }
-
-        function startMission(missionName) {
-            if (gameState[missionName]) return;
-
-            currentMission = missionName;
-            currentSessionScore = 3;
-            currentTargetDetected = false;
-
-            // Show AR
-            document.getElementById('ar-scene-container').classList.add('active');
-            document.getElementById('ar-overlay').classList.add('active');
-
-            // Update UI
-            document.getElementById('ar-mission-name').innerText = `Misión: ${missionDetails[missionName].name}`;
-            document.getElementById('ar-mission-hint').innerText = missionDetails[missionName].hint;
-
-            // Start MindAR
-            const sceneEl = document.querySelector('a-scene');
-            const arSystem = sceneEl.systems['mindar-image-system'];
-            if (arSystem) {
-                arSystem.start();
-            }
-        }
-
-        function startFinalMission() {
-            currentMission = 'Final';
-            currentTargetDetected = false;
-
-            // Show AR
-            document.getElementById('ar-scene-container').classList.add('active');
-            document.getElementById('ar-overlay').classList.add('active');
-
-            // Update UI
-            document.getElementById('ar-mission-name').innerText = "OBJETIVO FINAL";
-            document.getElementById('ar-mission-hint').innerText = missionDetails['Final'].hint;
-
-            // Start MindAR
-            const sceneEl = document.querySelector('a-scene');
-            const arSystem = sceneEl.systems['mindar-image-system'];
-            if (arSystem) {
-                arSystem.start();
-            }
-        }
-
-        function exitAR() {
-            // Stop MindAR
-            const sceneEl = document.querySelector('a-scene');
-            const arSystem = sceneEl.systems['mindar-image-system'];
-            if (arSystem) {
-                arSystem.stop();
-            }
-
-            // Hide AR
-            document.getElementById('ar-scene-container').classList.remove('active');
-            document.getElementById('ar-overlay').classList.remove('active');
-
-            // Reset detection state
-            currentTargetDetected = false;
-            document.getElementById('ar-detection-status').classList.remove('active');
-            document.getElementById('ar-confirm-btn').style.display = 'none';
-
-            // Return to hub
-            showScreen('screen-hub');
-        }
-
-        function confirmFound() {
-            if (currentMission === 'Final') {
-                exitAR();
-                showFinalWin();
-                return;
-            }
-
-            // Save state and score
-            gameState[currentMission] = true;
-            missionScores[currentMission] = currentSessionScore;
-
-            // Update success screen
-            document.getElementById('success-msg').innerText = `Has recuperado el fragmento de ${missionDetails[currentMission].name}.`;
-            document.getElementById('success-stars').innerText = getStarsString(currentSessionScore);
-
-            exitAR();
-            showScreen('screen-success');
-        }
-
-        function showFinalWin() {
-            let totalScore = 0;
-            Object.values(missionScores).forEach(score => totalScore += score);
-
-            document.getElementById('final-score-display').innerText = `${totalScore}/9 Estrellas`;
-            showScreen('screen-final-win');
-        }
-
-        function updateHubUI() {
-            let count = 0;
-            const total = 3;
-
-            for (const [key, done] of Object.entries(gameState)) {
-                const slot = document.getElementById(`slot-${key}`);
-                if (done) {
-                    slot.classList.add('slot-filled');
-                    const stars = getStarsString(missionScores[key]);
-                    slot.innerHTML = `✓<br>${key}<div class="mini-stars">${stars}</div>`;
-                    count++;
                 }
-            }
 
-            const statusText = document.getElementById('status-text');
-            statusText.innerText = `${count}/${total} Fragmentos`;
+                function onTargetLost() {
+                    currentTargetDetected = false;
+                    document.getElementById('ar-detection-status').classList.remove('active');
+                    document.getElementById('ar-confirm-btn').style.display = 'none';
 
-            if (count === total) {
-                document.getElementById('medallion-ring').classList.add('completed');
-                document.getElementById('hub-instruction').innerText = "¡Energía completa! Dirígete al patio.";
-                document.getElementById('final-message').style.display = 'block';
-                statusText.style.color = '#D4AF37';
-                statusText.style.fontWeight = 'bold';
-            }
-        }
+                    if (detectionTimeout) {
+                        clearTimeout(detectionTimeout);
+                        detectionTimeout = null;
+                    }
+                }
 
-        function getStarsString(count) {
-            let s = "";
-            for (let i = 0; i < count; i++) s += "⭐";
-            return s || "-";
-        }
-    </script>
+                // --- SCREEN MANAGEMENT ---
+                function showScreen(screenId) {
+                    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+                    document.getElementById(screenId).classList.add('active');
+
+                    if (screenId === 'screen-hub') {
+                        updateHubUI();
+                    }
+                }
+
+                function startMission(missionName) {
+                    if (gameState[missionName]) return;
+
+                    currentMission = missionName;
+                    currentSessionScore = 3;
+                    currentTargetDetected = false;
+
+                    // Show AR
+                    document.getElementById('ar-scene-container').classList.add('active');
+                    document.getElementById('ar-overlay').classList.add('active');
+
+                    // Update UI
+                    document.getElementById('ar-mission-name').innerText = `Misión: ${missionDetails[missionName].name}`;
+                    document.getElementById('ar-mission-hint').innerText = missionDetails[missionName].hint;
+
+                    // Start MindAR
+                    const sceneEl = document.querySelector('a-scene');
+                    const arSystem = sceneEl.systems['mindar-image-system'];
+                    if (arSystem) {
+                        arSystem.start();
+                    }
+                }
+
+                function startFinalMission() {
+                    currentMission = 'Final';
+                    currentTargetDetected = false;
+
+                    // Show AR
+                    document.getElementById('ar-scene-container').classList.add('active');
+                    document.getElementById('ar-overlay').classList.add('active');
+
+                    // Update UI
+                    document.getElementById('ar-mission-name').innerText = "OBJETIVO FINAL";
+                    document.getElementById('ar-mission-hint').innerText = missionDetails['Final'].hint;
+
+                    // Start MindAR
+                    const sceneEl = document.querySelector('a-scene');
+                    const arSystem = sceneEl.systems['mindar-image-system'];
+                    if (arSystem) {
+                        arSystem.start();
+                    }
+                }
+
+                function exitAR() {
+                    // Stop MindAR
+                    const sceneEl = document.querySelector('a-scene');
+                    const arSystem = sceneEl.systems['mindar-image-system'];
+                    if (arSystem) {
+                        arSystem.stop();
+                    }
+
+                    // Hide AR
+                    document.getElementById('ar-scene-container').classList.remove('active');
+                    document.getElementById('ar-overlay').classList.remove('active');
+
+                    // Reset detection state
+                    currentTargetDetected = false;
+                    document.getElementById('ar-detection-status').classList.remove('active');
+                    document.getElementById('ar-confirm-btn').style.display = 'none';
+
+                    // Return to hub
+                    showScreen('screen-hub');
+                }
+
+                function confirmFound() {
+                    if (currentMission === 'Final') {
+                        exitAR();
+                        showFinalWin();
+                        return;
+                    }
+
+                    // Save state and score
+                    gameState[currentMission] = true;
+                    missionScores[currentMission] = currentSessionScore;
+
+                    // Update success screen
+                    document.getElementById('success-msg').innerText = `Has recuperado el fragmento de ${missionDetails[currentMission].name}.`;
+                    document.getElementById('success-stars').innerText = getStarsString(currentSessionScore);
+
+                    exitAR();
+                    showScreen('screen-success');
+                }
+
+                function showFinalWin() {
+                    let totalScore = 0;
+                    Object.values(missionScores).forEach(score => totalScore += score);
+
+                    document.getElementById('final-score-display').innerText = `${totalScore}/9 Estrellas`;
+                    showScreen('screen-final-win');
+                }
+
+                function updateHubUI() {
+                    let count = 0;
+                    const total = 3;
+
+                    for (const [key, done] of Object.entries(gameState)) {
+                        const slot = document.getElementById(`slot-${key}`);
+                        if (done) {
+                            slot.classList.add('slot-filled');
+                            const stars = getStarsString(missionScores[key]);
+                            slot.innerHTML = `✓<br>${key}<div class="mini-stars">${stars}</div>`;
+                            count++;
+                        }
+                    }
+
+                    const statusText = document.getElementById('status-text');
+                    statusText.innerText = `${count}/${total} Fragmentos`;
+
+                    if (count === total) {
+                        document.getElementById('medallion-ring').classList.add('completed');
+                        document.getElementById('hub-instruction').innerText = "¡Energía completa! Dirígete al patio.";
+                        document.getElementById('final-message').style.display = 'block';
+                        statusText.style.color = '#D4AF37';
+                        statusText.style.fontWeight = 'bold';
+                    }
+                }
+
+                function getStarsString(count) {
+                    let s = "";
+                    for (let i = 0; i < count; i++) s += "⭐";
+                    return s || "-";
+                }
+            </script>
 </body>
 
 </html>
