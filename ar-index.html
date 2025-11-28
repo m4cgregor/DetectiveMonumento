@@ -153,6 +153,35 @@
             z-index: 5;
         }
 
+        .active {
+            display: flex;
+        }
+
+        /* Fondo Monumento (General) */
+        .bg-monument {
+            background-color: #1a1a1a;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('assets/monumento-bkg.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Fondo Final (Animado) */
+        .bg-final {
+            background-color: #0d1b2a;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('assets/monumento-bkg.png');
+            background-size: cover;
+            background-position: center;
+            animation: panBackground 20s infinite linear;
+        }
+
+        /* Fondo Intro (Más oscuro) */
+        .bg-intro {
+            background-color: #000;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.7)), url('assets/monumento-bkg.png');
+            background-size: cover;
+            background-position: center;
+        }
+
         @keyframes panBackground {
             0% {
                 background-position: center;
@@ -798,34 +827,33 @@
             currentSessionScore = 3;
             currentTargetDetected = false;
 
-            setupARMission(missionName);
-            startAR();
+            // Show AR
+            document.getElementById('ar-scene-container').classList.add('active');
+            document.getElementById('ar-overlay').classList.add('active');
+
+            // Update UI
+            document.getElementById('ar-mission-name').innerText = `Misión: ${missionDetails[missionName].name}`;
+            document.getElementById('ar-mission-hint').innerText = missionDetails[missionName].hint;
+
+            // Start MindAR
+            const sceneEl = document.querySelector('a-scene');
+            const arSystem = sceneEl.systems['mindar-image-system'];
+            if (arSystem) {
+                arSystem.start();
+            }
         }
 
         function startFinalMission() {
             currentMission = 'Final';
-            setupARMission('Final');
-            startAR();
-        }
+            currentTargetDetected = false;
 
-        function setupARMission(missionKey) {
-            const data = missionDetails[missionKey];
-            document.getElementById('ar-mission-name').innerText = data.name;
-            document.getElementById('ar-mission-hint').innerText = data.hint;
-        }
-
-        function startAR() {
-            if (!arSceneReady) {
-                alert('AR aún está cargando. Por favor espera un momento.');
-                return;
-            }
-
-            // Hide all screens
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-
-            // Show AR scene and overlay
+            // Show AR
             document.getElementById('ar-scene-container').classList.add('active');
             document.getElementById('ar-overlay').classList.add('active');
+
+            // Update UI
+            document.getElementById('ar-mission-name').innerText = "OBJETIVO FINAL";
+            document.getElementById('ar-mission-hint').innerText = missionDetails['Final'].hint;
 
             // Start MindAR
             const sceneEl = document.querySelector('a-scene');
